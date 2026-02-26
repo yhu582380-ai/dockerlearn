@@ -19,6 +19,9 @@ def sort():
     if not data or "numbers" not in data:
         return jsonify({"error": "请提供 numbers 数组"}), 400
     nums = data["numbers"]
+
+
+
     if len(nums) != 10:
         return jsonify({"error": "请提供恰好 10 个数字"}), 400
     try:
@@ -27,7 +30,7 @@ def sort():
         return jsonify({"error": "请确保全部为数字"}), 400
     result = bubble_sort(nums)
     return jsonify({"sorted": result})
-
+#添加注释
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
