@@ -31,6 +31,7 @@ def sort():
     result = bubble_sort(nums)
     return jsonify({"sorted": result})
 #添加注释
+#这是冒泡排序的实现
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
