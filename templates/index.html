@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>冒泡排序</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Microsoft YaHei", sans-serif; max-width: 480px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .inputs input { width: 100%; padding: 8px; text-align: center; }
+    button { padding: 10px 24px; font-size: 1rem; cursor: pointer; background: #2563eb; color: #fff; border: none; border-radius: 6px; }
+    button:hover { background: #1d4ed8; }
+    .result { margin-top: 1rem; padding: 1rem; background: #f1f5f9; border-radius: 8px; min-height: 2.5rem; }
+    .result-title { font-weight: bold; margin-bottom: 0.5rem; }
+    .error { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <h1>冒泡排序</h1>
+  <p>请输入 10 个数字：</p>
+  <div class="inputs" id="inputs"></div>
+  <button type="button" id="btn">排序</button>
+  <div class="result">
+    <div class="result-title">排序结果：</div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const count = 10;
+    const container = document.getElementById("inputs");
+    for (let i = 0; i < count; i++) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.placeholder = (i + 1).toString();
+      input.id = "n" + i;
+      container.appendChild(input);
+    }
+
+    document.getElementById("btn").onclick = async () => {
+      const numbers = [];
+      for (let i = 0; i < count; i++) {
+        const v = document.getElementById("n" + i).value.trim();
+        if (v === "") {
+          document.getElementById("output").innerHTML = '<span class="error">请填满 10 个数字</span>';
+          return;
+        }
+        numbers.push(Number(v));
+      }
+      const output = document.getElementById("output");
+      output.textContent = "排序中…";
+      try {
+        const res = await fetch("/api/sort", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ numbers })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          output.innerHTML = '<span class="error">' + (data.error || "请求失败") + "</span>";
+          return;
+        }
+        output.textContent = data.sorted.join(", ");
+      } catch (e) {
+        output.innerHTML = '<span class="error">网络错误，请确保后端已启动</span>';
+      }
+    };
+  </script>
+</body>
+</html>
